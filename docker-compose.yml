@@ -16,7 +16,7 @@ services:
       - "3308:3306"
 
   discovery-service:
-    build: ./discovery-service
+    build: ./backend/discovery-service
     ports:
       - "8761:8761"
     healthcheck:
@@ -26,16 +26,16 @@ services:
       retries: 5
 
   config-service:
-    build: ./config-service
+    build: ./backend/config-service
     ports:
       - "8888:8888"
     depends_on:
       - discovery-service
     volumes:
-      - ./config-repo:/config-repo
+      - ./backend/config-repo:/config-repo
 
   gateway-service:
-    build: ./gateway-service
+    build: ./backend/gateway-service
     ports:
       - "8222:8222"
     depends_on:
@@ -43,7 +43,7 @@ services:
       - discovery-service
 
   videoservice:
-    build: ./videoservice
+    build: ./backend/videoservice
     ports:
       - "8081:8081"
     depends_on:
@@ -55,7 +55,7 @@ services:
         condition: service_started
 
   user-service:
-    build: ./user-service
+    build: ./backend/user-service
     ports:
       - "8082:8082"
     depends_on:
