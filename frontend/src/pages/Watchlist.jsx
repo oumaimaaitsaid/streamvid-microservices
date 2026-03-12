@@ -1,24 +1,42 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { WatchlistContext } from "../contexts/WatchlistContextInstance";
 import { useNavigate } from "react-router-dom";
 import Layout from '../components/Layout';
+import { videoService } from "../api/api";
 
 const Watchlist = () => {
   const { watchlist, removeFromWatchlist } = useContext(WatchlistContext);
   const navigate = useNavigate();
+  const [movies, setMovies] = useState([]);
+
+  useEffect(() => {
+    const fetchMovies = async () => {
+      try {
+        const response = await videoService.getAllVideos();
+        setMovies(response.data);
+      } catch (error) {
+        console.error("Error fetching movies for watchlist:", error);
+      }
+    };
+    fetchMovies();
+  }, []);
+
+  const watchlistMovies = watchlist.map(item => {
+    return movies.find(m => m.id === item.videoId);
+  }).filter(Boolean);
 
   return (
     <Layout>
       <div className="max-w-7xl mx-auto px-4">
         <h1 className="text-3xl font-black mb-8">Ma Liste</h1>
 
-        {watchlist.length === 0 ? (
+        {watchlistMovies.length === 0 ? (
           <div className="text-center py-20 bg-zinc-900/20 rounded-3xl border-2 border-dashed border-zinc-800">
             <p className="text-gray-500">Votre liste est vide.</p>
           </div>
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
-            {watchlist.map(movie => (
+            {watchlistMovies.map(movie => (
               <div key={movie.id} className="group relative">
                 <img 
                   src={movie.thumbnailUrl} 

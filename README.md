@@ -1,47 +1,36 @@
-# Video Streaming Platform Microservices
+# StreamVid: Plateforme de Streaming Vidéo Fullstack
 
-Backend application for a video streaming platform using Spring Boot and Spring Cloud.
+Ce projet est une application de streaming vidéo complète utilisant une architecture microservices pour le backend et React.js pour le frontend.
 
-## Architecture
-- **Config Service**: Centralized configuration management using a local Git repository.
-- **Discovery Service**: Eureka server for service registration and discovery.
-- **Gateway Service**: Spring Cloud Gateway for routing requests.
-- **Video Service**: Manages video content (CRUD).
-- **User Service**: Manages users, watchlists, history, and statistics.
+## Architecture du Projet
+Le projet est organisé en **monorepo** :
+- `/backend` : Contient les microservices Spring Boot.
+- `/frontend` : Contient l'application React.js.
 
-## Tech Stack
-- Java 17, Spring Boot 3.4.3
-- Spring Cloud (Eureka, Config, Gateway, OpenFeign)
-- Spring Data JPA, MySQL
-- Docker & Docker Compose
+### Technologies
+- **Backend** : Java 17, Spring Boot 3.4.3, Spring Cloud 2024.0.0, Eureka, Config Server, API Gateway, OpenFeign, MySQL.
+- **Frontend** : React.js, Axios, Tailwind CSS.
+- **Orchestration** : Docker, Docker Compose.
 
-## Prerequisites
-- Maven 3.x
-- Docker & Docker Compose
-
-## How to Run
-1. Build all services:
+## Lancement Rapide (Docker)
+1. Assurez-vous que Docker Desktop est démarré.
+2. Compilez le backend :
    ```bash
+   cd backend
    mvn clean package -DskipTests
+   cd ..
    ```
-2. Start the infrastructure and services:
+3. Démarrez l'infrastructure complète :
    ```bash
    docker-compose up --build
    ```
 
-## API Endpoints
-### Video Service (via Gateway: 8222)
-- `GET /api/videos`: List all videos
-- `POST /api/videos`: Create a video
-- `GET /api/videos/{id}`: Get video details
+## Microservices
+1. **Config Service (8888)** : Centralise la configuration depuis `/backend/config-repo`.
+2. **Discovery Service (8761)** : Annuaire des services (Eureka).
+3. **Gateway Service (8222)** : Point d'accès unique et gestion CORS.
+4. **Video Service (8081)** : Gestion du catalogue vidéo.
+5. **User Service (8082)** : Gestion des utilisateurs, watchlists et historique.
 
-### User Service (via Gateway: 8222)
-- `POST /api/users`: Create a user
-- `POST /api/users/{userId}/watchlist/{videoId}`: Add to watchlist
-- `GET /api/users/{userId}/watchlist`: Get watchlist
-- `POST /api/users/{userId}/history`: Record watch history
-- `GET /api/users/{userId}/statistics`: Get watch stats
-
-## Jira & Documentation
-- [Jira Board](https://jira.example.com/projects/VSM)
-- Class Diagram: See `diagram.md` in artifacts.
+## Frontend
+L'application React est configurée pour communiquer avec le `gateway-service` sur le port `8222`. Tous les endpoints métier sont accessibles via ce port.
