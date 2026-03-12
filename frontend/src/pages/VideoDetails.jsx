@@ -1,25 +1,40 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { MOVIES } from "../data/mockData";
 import { WatchlistContext } from "../contexts/WatchlistContextInstance";
 import { HistoryContext } from "../contexts/HistoryContextInstance";
 import Layout from "../components/Layout";
+import { videoService } from "../api/api";
 
 const VideoDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { addToWatchlist, removeFromWatchlist, isInWatchlist } = useContext(WatchlistContext);
   const { addToHistory } = useContext(HistoryContext);
-
-  // Fix: Convertir l-id l-String darori
-  const movie = MOVIES.find(m => String(m.id) === String(id));
+  const [movie, setMovie] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-  if (movie) {
-    addToHistory(movie);
-  }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-}, [id]); // DIRIdirectement l-ID hna bach t-executa ghir mra wa7da mlli it-beddel l-URL
+    const fetchMovie = async () => {
+      try {
+        setLoading(true);
+        const response = await videoService.getVideoById(id);
+        setMovie(response.data);
+      } catch (error) {
+        console.error("Error fetching video details:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchMovie();
+  }, [id]);
+
+  useEffect(() => {
+    if (movie) {
+      addToHistory(movie);
+    }
+  }, [movie]);
+
+  if (loading) return <Layout><div className="text-white text-center py-20">Chargement...</div></Layout>;
 
   if (!movie) {
     return (

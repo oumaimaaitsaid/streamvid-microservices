@@ -1,22 +1,34 @@
-import React from "react";
-import { useLocalStorage } from "../hooks/useLocalStorage";
+import React, { useState, useEffect } from "react";
 import { HistoryContext } from "./HistoryContextInstance";
+import { userService } from "../api/api";
 
 export const HistoryProvider = ({ children }) => {
-  const [history, setHistory] = useLocalStorage("history", []);
+  const [history, setHistory] = useState([]);
+  const userId = 1; // Demo User ID
 
-  const addToHistory = (movie) => {
-    const alreadyWatched = history.find((item) => item.id === movie.id);
+  const fetchHistory = async () => {
+    try {
+      const response = await userService.getHistory(userId);
+      setHistory(response.data);
+    } catch (error) {
+      console.error("Error fetching history:", error);
+    }
+  };
 
-    if (!alreadyWatched) {
-      setHistory([
-        ...history,
-        {
-          ...movie,
-          watchedAt: new Date().toISOString(),
-          completed: true,
-        },
-      ]);
+  useEffect(() => {
+    fetchHistory();
+  }, []);
+
+  const addToHistory = async (movie) => {
+    try {
+      const alreadyWatched = history.find((item) => item.videoId === movie.id);
+
+      if (!alreadyWatched) {
+        await userService.addToHistory(userId, movie.id, movie.duration || 0, true);
+        fetchHistory();
+      }
+    } catch (error) {
+      console.error("Error recording history:", error);
     }
   };
 

@@ -1,32 +1,46 @@
-import React, { useState, useMemo } from "react";
-import { MOVIES } from "../data/mockData";
+import React, { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Layout from "../components/Layout";
+import { videoService } from "../api/api";
 
 const Home = () => {
   const navigate = useNavigate();
 
-  // States: Filtres + Recherche + Tri
+  const [movies, setMovies] = useState([]);
   const [typeFilter, setTypeFilter] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("");
   const [search, setSearch] = useState("");
   const [sortBy, setSortBy] = useState("recent");
 
-  const categories = useMemo(() => [...new Set(MOVIES.map((m) => m.category))], []);
+  useEffect(() => {
+    const fetchMovies = async () => {
+      try {
+        const response = await videoService.getAllVideos();
+        setMovies(response.data);
+      } catch (error) {
+        console.error("Error fetching movies:", error);
+      }
+    };
+    fetchMovies();
+  }, []);
+
+  const categories = useMemo(() => {
+    return [...new Set(movies.map((m) => m.category))];
+  }, [movies]);
 
   const filteredAndSortedMovies = useMemo(() => {
-  return MOVIES.filter((movie) => {
-    const matchesType = typeFilter === "" || movie.type.toUpperCase() === typeFilter.toUpperCase();
-    const matchesCategory = categoryFilter === "" || movie.category.toLowerCase().includes(categoryFilter.toLowerCase());
-    const matchesSearch = movie.title.toLowerCase().includes(search.toLowerCase());
-    
-    return matchesType && matchesCategory && matchesSearch;
-  }).sort((a, b) => {
-    if (sortBy === "recent") return b.releaseYear - a.releaseYear;
-    if (sortBy === "rating") return b.rating - a.rating;
-    return 0;
-  });
-}, [typeFilter, categoryFilter, search, sortBy]);
+    return movies.filter((movie) => {
+      const matchesType = typeFilter === "" || movie.type?.toUpperCase() === typeFilter.toUpperCase();
+      const matchesCategory = categoryFilter === "" || movie.category?.toLowerCase().includes(categoryFilter.toLowerCase());
+      const matchesSearch = movie.title?.toLowerCase().includes(search.toLowerCase());
+      
+      return matchesType && matchesCategory && matchesSearch;
+    }).sort((a, b) => {
+      if (sortBy === "recent") return b.releaseYear - a.releaseYear;
+      if (sortBy === "rating") return b.rating - a.rating;
+      return 0;
+    });
+  }, [movies, typeFilter, categoryFilter, search, sortBy]);
 
   return (
     <Layout>
