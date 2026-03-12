@@ -21,7 +21,17 @@ export const MOVIES = [
     rating: 8.6,
     releaseYear: 2019
   },
-
+  {
+    id: 7905466,
+    title: "They Shall Not Grow Old",
+    description: "Un documentaire poignant sur la Première Guerre mondiale avec des images restaurées et colorisées.",
+    thumbnailUrl: "https://m.media-amazon.com/images/M/MV5BZWI3ZThmYzUtNDJhOC00ZWY4LThiNmMtZDgxNjE3Yzk4NDU1XkEyXkFqcGdeQXVyNTk5Nzg1NjQ@._V1_SX300.jpg",
+    trailerUrl: "https://www.youtube.com/embed/19j-rEdGiEI?si=VOq3ozYzqt8B8juz",
+    category: "Documentary",
+    type: "FILM",
+    rating: 8.3,
+    releaseYear: 2018
+  },
   {
     id: 1980209,
     title: "Pain & Gain",
@@ -55,6 +65,17 @@ export const MOVIES = [
     type: "FILM",
     rating: 8.1,
     releaseYear: 2019
+  },
+  {
+    id: 110367,
+    title: "Little Women",
+    description: "Les quatre filles de la famille March apprennent à devenir des femmes après la guerre de Sécession.",
+    thumbnailUrl: "https://m.media-amazon.com/images/M/MV5BNmJhNTgzMWYtZTU5OC00MmE2LTlkN2UtNWE0MmJiNWJmNmZjXkEyXkFqcGdeQXVyMTQxNzMzNDI@._V1_SX300.jpg",
+    trailerUrl: "https://www.youtube.com/embed/nmJ9_y2L2kE",
+    category: "Drame",
+    type: "FILM",
+    rating: 7.3,
+    releaseYear: 1994
   },
   
   {
